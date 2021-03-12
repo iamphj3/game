@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html> 
+<head>
+	<meta charset="utf-8">
+	<title>웹 프로그래밍 과제 #2 - 벽돌 깨기 게임</title>	
+	<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Dancing+Script&family=Do+Hyeon&family=Jua&family=Manrope:wght@200&family=Noto+Sans+KR:wght@300&family=Yeon+Sung&display=swap" rel="stylesheet">
+	<style>
+		* { margin: 0; padding: 0;} 
+		img { display: block; margin: 0 auto; }
+		footer { text-align: center; font-family: 'Manrope', sans-serif;}
+		p {font-family: 'Jua'; font-size: 17px; }
+		h1 {font-family: 'Jua'; font-size: 22px; }
+		pre {font-family: 'Jua'; font-size: 21px; text-align: center;}
+		#story { margin-right:-4px; } 
+		#start { margin-right:-3px; } 
+		#setting { margin-right:-2px; } 
+		#btn { text-align:center; display: block;}
+		#btn2 { text-align:center; display: block;}
+		#btn2 button { width: 150px; font-size: 25px; border: 1px solid #9575CD ; color:white; background-color: #9575CD ; margin: 10px 0; padding: 5px; font-family: 'Jua', sans-serif;}
+		#btn2 button:hover { background-color: white; color: #9575CD ; font-family: 'Jua', sans-serif;}
+		#btn button { width: 100px; font-size: 20px; border: 1px solid #29B6F6; color:white; background-color: #29B6F6; margin-bottom: 10px; padding: 5px; font-family: 'Jua', sans-serif;}
+		#btn button:hover { background-color: white; color: skyblue; font-family: 'Jua', sans-serif;}
+		#gamearea {display: none;}
+		#textarea {position:absolute; display: none; margin: 0 auto; text-align: center; left: 50%; top: 50%; transform: translate(-50%,-50%); padding-top: 15px;}
+		#myCanvas { position:absolute; background: skyblue; display: block; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: -1;}
+		#parent {  display: block;}
+		#a { position: relative; height: 415px;}
+		#setarea {display: none; text-align: center; margin: 0 auto; font-family: 'Jua'; width:600px; height: 400px; padding-top: 15px;} 
+		
+
+	</style>
+</head>
+<body>
+	<header><a onClick="window.location.reload()" style="cursor: pointer;"><img src="logo.png" alt="logo" width="600"></a></header>
+
+
+	<div id="btn">
+		<button id="story" onclick="text();">스토리</button>
+		<button id="start" onclick="level();">게임시작</button> 
+		<button id="setting" onclick="set();">환경설정</button>
+	</div>
+
+	<div id="a" >
+		<div id="parent">
+			<canvas id="myCanvas" width="600" height="400" ></canvas>
+			<div id="textarea">
+				<pre>
+천상계에 살고 있던 넘버원은 큰 죄를 지어 타락계로
+떨어지는 벌을 받게 되었다.
+
+신 : 괘씸한 놈! 너를 타락계로 떨어뜨릴 것이다!
+넘버원 : 헉, 제발 한 번만 용서해 주십시오ㅜㅜ
+신 : 그래도 정이 있으니 다시 돌아올 기회를 주겠다.
+타락계와 천상계 사이에는 봉인계, 인간계, 신성계
+총 3개의 세계가 있다. 그곳에서 모든 관문을 통과하면
+너를 용서하고 받아 주겠다. 도전해보겠느냐?
+넘버원 : 감사합니다!!! 꼭 성공해서 돌아오겠습니다!
+
+그렇게 넘버원은 타락계에서 천상계로의 여정을 시작한다.
+				</pre>
+			</div>
+			<div id="setarea">
+                <h1><환경 설정><br><br></h1>
+                
+                <h1>패들 크기</h1>
+				<input type="button" value="키우기" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="paddle_size_plus();">
+				<input type="button" value="줄이기" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="paddle_size_minus();">
+
+				<h1>공 크기</h1>
+				<input type="button" value="키우기" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="ball_size_plus();">
+                <input type="button" value="줄이기" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="ball_size_minus();">
+
+                <h1>공 속도</h1>
+				<input type="button" value="빠르게"style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;"  onclick="speed_plus();">
+				<input type="button" value="느리게" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="speed_minus();">
+                
+                <h1>공 색깔</h1>
+                <input type="button" value="파랑" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="blueball();">
+                <input type="button" value="분홍" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="pinkball();">
+                <input type="button" value="보라" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="purpleball();">
+                <input type="button" value="노랑" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="yellowball();">
+                <input type="button" value="연두" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="greenball();">
+                <input type="button" value="흰색" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="whiteball();">
+          
+				
+				<h1>벽돌 색깔</h1>
+                <input type="button" value="파랑" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="bluebrick();">
+                <input type="button" value="분홍" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="pinkbrick();">
+                <input type="button" value="보라" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="purplebrick();">
+                <input type="button" value="노랑" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="yellowbrick();">
+                <input type="button" value="연두" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="greenbrick();">
+                <input type="button" value="흰색" style="width:75px; color:#21618C; font-family:Jua; font-size: 20px; background-color:#D6EAF8 ; border-style: none;" onclick="whitebrick();">
+
+			</div>		
+		</div>
+	</div>
+
+	<div id="gamearea">	
+		<div id="btn2">
+			<button id="lv1" onclick="draw1();">봉인계 (lv.1)</button>
+			<button id="lv2" onclick="draw2();">인간계 (lv.2)</button>
+			<button id="lv3" onclick="draw3();">신성계 (lv.3)</button>
+			<p>원하는 단계를 선택할 수 있으며, 게임 승리 시 자동으로 다음 단계로 넘어갑니다.</p>
+		</div>
+	</div>
+
+
+	<footer>201911176 Hyeon-Ji Park</footer>
+</body>
+	<script src="pa2.js"></script> 
+</html>
